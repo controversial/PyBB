@@ -1,16 +1,19 @@
 """
-An experimental interface to NodeBB forums. By Luke Taylor.
+PyBB - an experimental interface to NodeBB forums by Luke Taylor
 
-Implements classes for:
-  - Forums
-  - Users
-
-I plan to add classes for:
-  - Topics
-  - Posts
+Features:
+    - Implements classes for Forums and Users
+    - Automatically exposes all information that is available through the API
+      through the use of Python's __getattr__ magic method
+    - Implements certain "smart" data enrichments, such as:
+        - Returns user profile images as PIL images if PIL is installed
+        - Returns values that represent times as Python datetime objects
+Planned features:
+    - Classes for Topics and Posts
+    - More data enrichments
 
 Also tries to implement 'smart' methods for returning data:
-  - Return a datetime object for any time-related value
+    - Return a datetime object for any time-related value
 """
 
 import datetime
@@ -39,7 +42,7 @@ def process_data(data):
     return data
 
 
-   
+
 class Forum:
     def __init__(self, url):
         self.url = url
@@ -59,7 +62,7 @@ class Forum:
         self.config = json.loads(self.configreq.text)
         # Forum title
         self.title = self.config['siteTitle']
-        
+
     def dump_data(self, path='.'):
         '''Dump forum data to a JSON file'''
         path = os.path.join(path, 'forum' + '.json')
@@ -101,7 +104,7 @@ class User:
         imgdata = requests.get(imgurl).content
         file = BytesIO(imgdata)
         return Image.open(file)
-    
+
     def dump_data(self, path='.'):
         '''Dump user data to a JSON file'''
         path = os.path.join(path, self.username + '.json')
@@ -123,6 +126,6 @@ if __name__ == '__main__':
     forum = Forum('https://forum.omz-software.com/')
     # Print forum title
     print(forum.title)
-    # Get a forum user and show their profile picture 
+    # Get a forum user and show their profile picture
     u = forum.User('Webmaster4o')
     u.image.show()
