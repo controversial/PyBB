@@ -1,3 +1,4 @@
+#!/usr/local/bin/python3
 """
 PyBB - an experimental interface to NodeBB forums by Luke Taylor
 
@@ -20,9 +21,16 @@ import datetime
 from io import BytesIO
 import json
 import os
-from PIL import Image
-import requests
 from urllib.parse import urlparse, urljoin
+
+# Try to import PIL, if it's not installed fail gracefully
+try:
+    from PIL import Image
+    hasPIL = True
+except ImportError:
+    hasPIL = False
+
+import requests
 
 
 def process_data(data):
@@ -47,7 +55,7 @@ class Forum:
     def __init__(self, url):
         self.url = url
         self.head = requests.head(url).headers
-        if 'X-Powered-By' not in self.head or self.head['X-Powered-By'] != 'NodeBB':
+        if self.head.get("X-Powered-By") != "NodeBB":
             raise ValueError('That\'s not a NodeBB forum')
         # URL for the API page about the forum
         self.endpoint = urljoin(self.url, 'api/')
@@ -101,9 +109,12 @@ class User:
     def image(self):
         '''Returns a PIL image for the user's profile image'''
         imgurl = urljoin(self.forum.endpoint, self.picture)
-        imgdata = requests.get(imgurl).content
-        file = BytesIO(imgdata)
-        return Image.open(file)
+        if not hasPIL:
+            return imgurl
+        else:
+            imgdata = requests.get(imgurl).content
+            file = BytesIO(imgdata)
+            return Image.open(file)
 
     def dump_data(self, path='.'):
         '''Dump user data to a JSON file'''
