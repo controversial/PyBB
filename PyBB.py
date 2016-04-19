@@ -128,7 +128,7 @@ class Forum(_ForumObjectBase):
 
 
 class User(_ForumObjectBase):
-    def __init__(self, forum, username):
+    def _setup(self, forum, username):
         self.forum = forum
         self.username = username
         # URL for the API page about the user
@@ -150,12 +150,18 @@ class User(_ForumObjectBase):
             return Image.open(file)
 
 if __name__ == "__main__":
+    # This is my pitiful excuse for "unit tests," just to make sure I didn't
+    # break anything
+
     # Get object for omz-software forums
     forum = Forum("https://forum.omz-software.com/")
     # Print some random info about the forum
-    print("Forum title: " + forum.title)
-    print("Version: " + forum.version)
-    print("Recent topic: " + forum.topics[0]["title"])
-    # Get a forum user and show their profile picture
-    u = forum.User("Webmaster4o")
-    u.image.show()
+    print("Forum title: " + forum.title)  # Title of forum
+    print("Version: " + forum.version)  # Version of NodeBB
+    print("Recent topic: " + forum.topics[0]["title"])  # A topic
+    # Get a forum user and display some random info
+    user1 = forum.User("Webmaster4o")
+    print(user1.data)
+    print(user1.loggedIn)  # Is the user logged in?
+    print(user1.postcount)  # How many posts the user has
+    user1.image.show()  # Download and show their profile image
