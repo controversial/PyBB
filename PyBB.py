@@ -128,6 +128,10 @@ class Forum(_ForumObjectBase):
         """ Allows creation of Users by Forum("url").User("username") """
         return User(self, username)
 
+    @property
+    def topics(self):
+        return [Topic(data, self) for data in self.data["topics"]]
+
 
 class User(_ForumObjectBase):
     def _setup(self, forum, username):
@@ -153,6 +157,14 @@ class User(_ForumObjectBase):
             return Image.open(file)
 
 
+class Topic(_ForumObjectBase):
+    def _setup(self, data, forum):
+        self.forum = forum
+        self.data = data
+        self.category = self.category["name"]
+        self.user = forum.User(self.user["username"])
+
+
 if __name__ == "__main__":
     # This is my pitiful excuse for "unit tests," just to make sure I didn't
     # break anything
@@ -162,7 +174,8 @@ if __name__ == "__main__":
     # Print some random info about the forum
     print("Forum title: " + forum.title)  # Title of forum
     print("Version: " + forum.version)  # Version of NodeBB
-    print("Recent topic: " + forum.topics[0]["title"])  # A topic
+
+
     # Get a forum user and display some random info
     user1 = forum.User("Webmaster4o")
     print("Logged in: " + str(user1.loggedIn))  # Is the user logged in?
@@ -173,4 +186,7 @@ if __name__ == "__main__":
     ]
     print("Joined on a " + weekday)  # Day of week joined
 
-    user1.image.show()  # Download and show their profile image
+
+    topic1 = forum.topics[0]
+    print("Recent topic: " + topic1.title)
+    topic1.user.image.show()
