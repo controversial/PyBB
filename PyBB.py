@@ -114,6 +114,8 @@ class Forum(_ForumObjectBase):
         self.configreq = requests.get(self.cfurl)  # |- Forum config
         self.config = json.loads(self.configreq.text)  # |/
 
+        self._name = self.config["siteTitle"]
+
         self.aliases = {"title": "siteTitle"}
 
         self.data = dict(                  # Combination of data from:
@@ -131,6 +133,7 @@ class User(_ForumObjectBase):
     def _setup(self, forum, username):
         self.forum = forum
         self.username = username
+        self._name = username
         # URL for the API page about the user
         self.api_url = urljoin(self.forum.endpoint, "user/" + username)
         # Requests object for the API call
@@ -148,6 +151,7 @@ class User(_ForumObjectBase):
             imgdata = requests.get(imgurl).content
             file = BytesIO(imgdata)
             return Image.open(file)
+
 
 if __name__ == "__main__":
     # This is my pitiful excuse for "unit tests," just to make sure I didn't
