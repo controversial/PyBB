@@ -93,6 +93,9 @@ class _ForumObjectBase (object):
             raise AttributeError(self.__class__.__name__ +
                                  " instance has no attribute '" + key + "'")
 
+    def __str__(self):
+        return self._name
+
 # ------ MAIN CLASSES ------ #
 
 
@@ -172,7 +175,7 @@ if __name__ == "__main__":
     # Get object for omz-software forums
     forum = Forum("https://forum.omz-software.com/")
     # Print some random info about the forum
-    print("Forum title: " + forum.title)  # Title of forum
+    print("Forum title: " + str(forum))  # Title of forum
     print("Version: " + forum.version)  # Version of NodeBB
 
 
