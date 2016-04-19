@@ -161,7 +161,12 @@ if __name__ == "__main__":
     print("Recent topic: " + forum.topics[0]["title"])  # A topic
     # Get a forum user and display some random info
     user1 = forum.User("Webmaster4o")
-    print(user1.data)
-    print(user1.loggedIn)  # Is the user logged in?
-    print(user1.postcount)  # How many posts the user has
+    print("Logged in: " + str(user1.loggedIn))  # Is the user logged in?
+    print("Post count: " + str(user1.postcount))  # How many posts the user has
+    weekday = {0: "Monday", 1: "Tuesday", 2: "Wednesday", 3: "Thursday",
+               4: "Friday", 5: "Saturday", 6: "Sunday"}[
+                   user1.joindate.weekday()
+    ]
+    print("Joined on a " + weekday)  # Day of week joined
+
     user1.image.show()  # Download and show their profile image
