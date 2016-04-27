@@ -1,4 +1,3 @@
-#!/usr/local/bin/python3
 """
 PyBB - an experimental interface to NodeBB forums by Luke Taylor
 
@@ -22,8 +21,11 @@ import inspect
 from io import BytesIO
 import json
 import os
-from urllib.parse import urlparse, urljoin
 
+try:  # Python 3
+    from urllib.parse import urlparse, urljoin
+except ImportError:  # Python 2
+    from urlparse import urlparse, urljoin
 # Try to import PIL, if it's not installed fail gracefully
 try:
     from PIL import Image
